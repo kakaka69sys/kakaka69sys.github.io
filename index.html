@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de IMC</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #e6f2ff;
+    }
+    .container {
+      background-color: white;
+      padding: 25px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #resultado {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+    }
+    #recomendaciones {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Calculadora de IMC</h2>
+    <label for="peso">Peso (kg):</label>
+    <input type="number" id="peso" step="0.1" placeholder="Ej. 70">
+
+    <label for="estatura">Estatura (m):</label>
+    <input type="number" id="estatura" step="0.01" placeholder="Ej. 1.75">
+
+    <button onclick="calcularIMC()">Calcular IMC</button>
+
+    <div id="resultado"></div>
+    <div id="recomendaciones"></div>
+  </div>
+
+  <script>
+    function calcularIMC() {
+      const peso = parseFloat(document.getElementById('peso').value);
+      const estatura = parseFloat(document.getElementById('estatura').value);
+      const resultado = document.getElementById('resultado');
+      const recomendaciones = document.getElementById('recomendaciones');
+
+      recomendaciones.innerHTML = ""; // Limpiar
+
+      if (!peso || !estatura || estatura <= 0) {
+        resultado.textContent = "Por favor, ingresa datos válidos.";
+        return;
+      }
+
+      const imc = peso / (estatura * estatura);
+      let clasificacion = "";
+      let links = [];
+
+      if (imc < 18.5) {
+        clasificacion = "Bajo peso";
+        links = [
+          "https://www.cdc.gov/nutrition/esp/estrategias-saludables.html",
+          "https://www.healthline.com/nutrition/how-to-gain-weight",
+          "https://www.medlineplus.gov/spanish/ency/article/007196.htm",
+          "https://www.healthline.com/nutrition/weight-gain-meal-plan",
+          "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6019055/"
+        ];
+      } else if (imc >= 18.5 && imc < 24.9) {
+        clasificacion = "Peso normal";
+        links = [
+          "https://www.cdc.gov/healthyweight/spanish/index.html",
+          "https://www.who.int/es/news-room/fact-sheets/detail/healthy-diet",
+          "https://www.nhs.uk/live-well/exercise/",
+          "https://www.healthline.com/health/fitness-exercise/weekly-workout-schedule",
+          "https://www.mayoclinic.org/es/healthy-lifestyle/fitness/in-depth/fitness/art-20048269"
+        ];
+      } else if (imc >= 25 && imc < 29.9) {
+        clasificacion = "Sobrepeso";
+        links = [
+          "https://www.cdc.gov/healthyweight/spanish/losing_weight/index.html",
+          "https://www.medlineplus.gov/spanish/weightcontrol.html",
+          "https://www.fundaciondelcorazon.com/nutricion/dietas/2225-dieta-para-perder-peso.html",
+          "https://www.healthline.com/nutrition/30-ways-to-lose-weight-naturally",
+          "https://www.nhs.uk/live-well/healthy-weight/start-the-nhs-weight-loss-plan/"
+        ];
+      } else if (imc >= 30 && imc < 34.9) {
+        clasificacion = "Obesidad grado I";
+        links = [
+          "https://www.nhlbi.nih.gov/health/educational/lose_wt/spanish/index.htm",
+          "https://www.who.int/es/news-room/fact-sheets/detail/obesity-and-overweight",
+          "https://medlineplus.gov/spanish/obesityinchildren.html",
+          "https://www.eatright.org/health/weight-loss/your-health-and-your-weight",
+          "https://www.cdc.gov/obesity/adult/causes.html"
+        ];
+      } else if (imc >= 35 && imc < 39.9) {
+        clasificacion = "Obesidad grado II";
+        links = [
+          "https://www.mayoclinic.org/es/diseases-conditions/obesity/symptoms-causes/syc-20375742",
+          "https://www.obesityaction.org/",
+          "https://www.healthline.com/nutrition/obesity-treatment",
+          "https://www.niddk.nih.gov/health-information/weight-management",
+          "https://www.uptodate.com/contents/obesity-beyond-the-basics"
+        ];
+      } else {
+        clasificacion = "Obesidad grado III (mórbida)";
+        links = [
+          "https://www.endocrine.org/patient-engagement/endocrine-library/obesity",
+          "https://www.cdc.gov/obesity/adult/index.html",
+          "https://www.webmd.com/diet/obesity/obesity-health-risks",
+          "https://medlineplus.gov/obesity.html",
+          "https://www.who.int/publications/i/item/9789240038309"
+        ];
+      }
+
+      resultado.textContent = `Tu IMC es: ${imc.toFixed(2)} - ${clasificacion}`;
+
+      let lista = "<p><strong>Recomendaciones:</strong></p><ul>";
+      links.forEach(link => {
+        lista += `<li><a href="${link}" target="_blank">${link}</a></li>`;
+      });
+      lista += "</ul>";
+      recomendaciones.innerHTML = lista;
+    }
+  </script>
+</body>
+</html>
+
